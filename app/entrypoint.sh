@@ -1,0 +1,30 @@
+#!/bin/bash
+
+VIDEO_CAPS="video/x-raw,width=1920,height=1080,framerate=30/1,format=I420"
+AUDIO_CAPS="audio/x-raw,rate=48000,channels=1,format=F32LE"
+BUFFER_NS=3000000000
+
+gst-launch-1.0 -e \
+  fallbacksrc name=fs \
+    uri="$INPUT_URL" \
+    fallback-uri="file:///app/fallback.jpg" \
+    restart-on-eos=true \
+  \
+  flvmux name=mux streamable=true ! rtmpsink location="$OUTPUT_URL" \
+  \
+  compositor name=vmix latency=$BUFFER_NS ! $VIDEO_CAPS ! \
+    x264enc bitrate=8000 key-int-max=60 tune=zerolatency speed-preset=fast ! \
+    h264parse config-interval=1 ! queue ! mux.video \
+  \
+  audiomixer name=amix start-time-selection=0 latency=$BUFFER_NS ! $AUDIO_CAPS ! \
+    audioconvert ! \
+    audioresample quality=10 resample-method=4 ! \
+    avenc_aac bitrate=320000 ! \
+    aacparse ! queue ! mux.audio \
+  \
+  fs.video_0 ! videoconvert ! videoscale ! videorate ! $VIDEO_CAPS ! \
+    queue max-size-buffers=0 max-size-time=$BUFFER_NS leaky=downstream ! vmix. \
+  \
+  fs.audio_0 ! audioconvert ! audioresample ! \
+    audiorate skip-to-first=true ! $AUDIO_CAPS ! \
+    queue max-size-buffers=0 max-size-time=$BUFFER_NS leaky=downstream ! amix.
