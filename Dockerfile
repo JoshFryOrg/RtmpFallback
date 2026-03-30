@@ -57,4 +57,6 @@ ENV GST_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gstreamer-1.0
 ENV INPUT_URL="rtmp://your-source-url/live/stream"
 ENV OUTPUT_URL="rtmp://your-destination-url/live/output"
 
+STOPSIGNAL SIGINT
+
 ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]

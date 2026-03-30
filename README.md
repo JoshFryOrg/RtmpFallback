@@ -33,3 +33,6 @@ If you are, you need to rename `entrypoint-vaapi.sh` to `entrypoint.sh` and plac
 
 ## Note
 On first start before you start streaming, the fallback image can look squished rather than 1920x1080. This goes away when you start streaming.
+
+## Graceful Shutdown
+The entrypoint uses `exec` so `gst-launch-1.0` becomes PID 1, and the image sets `STOPSIGNAL SIGINT` so Docker stops it with the same signal as `Ctrl+C`.
