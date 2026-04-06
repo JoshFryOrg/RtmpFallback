@@ -18,8 +18,6 @@ exec gst-launch-1.0 -e \
     h264parse config-interval=1 ! queue ! mux.video \
   \
   audiomixer name=amix start-time-selection=0 latency=$BUFFER_NS ! $AUDIO_CAPS ! \
-    audioconvert ! \
-    audioresample quality=10 resample-method=4 ! \
     avenc_aac bitrate=320000 ! \
     aacparse ! queue ! mux.audio \
   \
