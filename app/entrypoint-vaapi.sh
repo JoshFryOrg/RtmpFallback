@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VIDEO_CAPS="video/x-raw,width=1920,height=1080,framerate=60/1,format=NV12"
-AUDIO_CAPS="audio/x-raw,rate=48000,channels=1,format=F32LE"
+AUDIO_CAPS="audio/x-raw,rate=48000,channels=2,format=F32LE"
 BUFFER_NS=3000000000
 
 exec gst-launch-1.0 -e \
