@@ -14,10 +14,12 @@ exec gst-launch-1.0 -e \
   \
   vacompositor name=vmix ! \
     vapostproc ! $VIDEO_CAPS ! \
-    vah264enc bitrate=10000 key-int-max=30 b-frames=3 ref-frames=4 cpb-size=30000 target-usage=1 ! \
+    vah264enc bitrate=10000 key-int-max=120 b-frames=3 ref-frames=4 cpb-size=30000 target-usage=1 ! \
     h264parse config-interval=1 ! queue ! mux.video \
   \
   audiomixer name=amix start-time-selection=0 latency=$BUFFER_NS ! $AUDIO_CAPS ! \
+    rglimiter ! \
+    audioconvert ! \
     avenc_aac bitrate=320000 ! \
     aacparse ! queue ! mux.audio \
   \
