@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install cargo-c
-RUN cargo install cargo-c
+# --locked uses cargo-c's shipped Cargo.lock so a breaking transitive dependency can't break the build.
+RUN cargo install cargo-c --locked
 
 # Clone the repository
 WORKDIR /usr/src/gst-plugins-rs
