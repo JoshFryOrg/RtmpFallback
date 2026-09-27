@@ -1,5 +1,6 @@
 # --- Stage 1: Build ---
-FROM rust:bookworm AS builder
+# Images are pinned to versions (not floating tags) so Dependabot can read them and propose bumps as PRs.
+FROM rust:1.98.1-bookworm AS builder
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -14,9 +15,11 @@ RUN apt-get update && apt-get install -y \
 # --locked uses cargo-c's shipped Cargo.lock so a breaking transitive dependency can't break the build.
 RUN cargo install cargo-c --locked
 
-# Clone the repository
+# Clone a pinned gst-plugins-rs release. Dependabot cannot see a git clone, so bump this by hand from
+# https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/tags.
+ARG GST_PLUGINS_RS_VERSION=0.15.4
 WORKDIR /usr/src/gst-plugins-rs
-RUN git clone https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs.git .
+RUN git clone --depth=1 --branch "${GST_PLUGINS_RS_VERSION}" https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs.git .
 
 # Build a specific plugin (e.g., gst-plugin-tutorial) or all of them
 # Note: Building ALL plugins can take a very long time and may require more deps.
@@ -25,7 +28,7 @@ WORKDIR /usr/src/gst-plugins-rs/utils/fallbackswitch
 RUN cargo cinstall --destdir=/target
 
 # --- Stage 2: Runtime ---
-FROM debian:bookworm-slim
+FROM debian:12.15-slim
 
 # Enable non-free and non-free-firmware repos for Intel drivers
 RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources || \

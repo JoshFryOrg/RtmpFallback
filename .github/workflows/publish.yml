@@ -4,9 +4,6 @@ on:
     push:
         branches:
             - master
-    schedule:
-        # Weekly, Sunday 22:30 UTC, to pick up the latest base-image and package updates
-        - cron: '30 22 * * 0'
     workflow_dispatch:
 
 jobs:
