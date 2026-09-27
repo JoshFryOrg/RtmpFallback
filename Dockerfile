@@ -28,7 +28,7 @@ WORKDIR /usr/src/gst-plugins-rs/utils/fallbackswitch
 RUN cargo cinstall --destdir=/target
 
 # --- Stage 2: Runtime ---
-FROM debian:12.15-slim
+FROM debian:13.7-slim
 
 # Enable non-free and non-free-firmware repos for Intel drivers
 RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources || \
