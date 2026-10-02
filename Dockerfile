@@ -1,6 +1,6 @@
 # --- Stage 1: Build ---
 # Images are pinned to versions (not floating tags) so Dependabot can read them and propose bumps as PRs.
-FROM rust:1.98.1-bookworm AS builder
+FROM rust:1.99.0-bookworm AS builder
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
